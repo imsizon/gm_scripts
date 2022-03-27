@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Fullfill xiaohongshu comments
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Fullfill xiaohongshu comments for pc web
 // @author       You
 // @match        https://www.xiaohongshu.com/discovery/item/*
@@ -37,29 +37,23 @@
         var qm = location.href.indexOf("?");
         if(qm < 0) qm = location.href.length;
         var allComments = location.href.substr(0, qm) + "/comments";
-        // $(".all-tip div.content").hide();
-        // $(".all-tip").append("<iframe id=\"cframe\" style=\"border:none\" />");
-        // $("iframe#cframe").css("width", comments);
-        // var frame = document.getElementById("cframe");
-        // frame.onload = function() {
-        //     setTimeout(function() {
-        //         $(frame).css("height", frame.contentWindow.document.documentElement.scrollHeight + 'px');
-        //     }, 200);
-        // };
-        // $("iframe#cframe").attr("src", allComments);
-
         var author = $(".name .name-detail:first").text();
-        var cmattr = $("div.comment")[0].attributes[0].name;
-        var cnattr = $(".all-tip div.content")[0].attributes[0].name;
-        var rpattr = $("div.reply")[0].attributes[0].name;
-        var avtattr = $("div.avatar")[0].attributes[0].name;
-        var avtimgattr = $("div.avatar img")[0].attributes[0].name;
-        var iconattr = $("div.comment .icon")[0].attributes[0].name;
-        var thumbSvg = $("span.like-sum:first").parent().html();
-        if(!thumbSvg) {
-            thumbSvg = $("span.likes:first").html();
-        }
-        if(cmattr) {
+        if($("div.comment").length > 0) {
+            var cnattr = $(".all-tip div.content")[0].attributes[0].name;
+            var cmattr = $("div.comment")[0].attributes[0].name;
+            if($("div.reply").length > 0) {
+                var rpattr = $("div.reply")[0].attributes[0].name;
+            }
+            var avtattr = $("div.avatar")[0].attributes[0].name;
+            var avtimgattr = $("div.avatar img")[0].attributes[0].name;
+            if($("div.comment .icon").length > 0) {
+                var iconattr = $("div.comment .icon")[0].attributes[0].name;
+            }
+            var thumbSvg = $("span.like-sum:first").parent().html();
+            if(!thumbSvg) {
+                thumbSvg = $("span.likes:first").html();
+            }
+        
             $.get(allComments).done(function(data) {
                 var html = $.parseHTML(data);
                 $(html).find("a.back").remove();
@@ -101,7 +95,7 @@
                             $(this).find("span.like-sum").text(thumbs);
                         });
                     });
-                    if(rpattr) {
+                    if($("div.reply").length > 0) {
                         $(this).find("div.reply").each(function() {
                             $(this).attr(rpattr, "");
                             $(this).find("p").each(function() {
@@ -118,7 +112,7 @@
                             $(this).html("<span " + rpattr + " class=\"replier\">" + rpuser + " : </span>" + rphtml + pubhtml);
                         });
                     }
-                    if(iconattr) {
+                    if($("div.comment .icon").length > 0) {
                         $(this).find("div.comment .icon").attr(iconattr, "");
                     }
                     $(".all-tip div.content").html($(this).html());
