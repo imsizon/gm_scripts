@@ -39,7 +39,7 @@
         }
         var qm = location.href.indexOf("?");
         if(qm < 0) qm = location.href.length;
-        var allComments = location.href.substr(0, qm) + "/comments";
+        var allComments = location.href.substr(0, qm) + "/comments" + location.href.substr(qm);
         var author = $(".name .name-detail:first").text();
         if($("div.comment").length > 0) {
             var cnattr = $("div.content:has(div.comment)")[0].attributes[0].name;
